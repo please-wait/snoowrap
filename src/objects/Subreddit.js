@@ -3,6 +3,8 @@ const _ = require('lodash');
 const promise_wrap = require('promise-chains');
 const helpers = require('../helpers');
 const errors = require('../errors');
+const UserNotes = require('./UserNotes');
+const UserNote = require('./UserNote');
 const api_type = 'json';
 
 /**
@@ -862,6 +864,15 @@ const Subreddit = class extends require('./RedditContent') {
   */
   get_wiki_revisions (options) {
     return this._get({uri: `r/${this.display_name}/wiki/revisions`, qs: options});
+  }
+  get_usernotes () {
+    return promise_wrap(this.get_wiki_page('usernotes').fetch().get('content_md').then(JSON.parse).then(contents => {
+      return UserNotes._inflate_blob(contents.blob).then(inflated_blob => {
+        return _.assign(UserNotes.from(
+          _.flatMap(inflated_blob, (notes, user) => _.map(notes.ns, note => new UserNote(note, this._ac, contents, user)))
+        ), {_subreddit: this, _context: contents, _ac: this._ac});
+      });
+    }));
   }
 };
 

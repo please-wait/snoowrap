@@ -9,7 +9,7 @@ const api_type = 'json';
 */
 const Submission = class extends require('./VoteableContent') {
   get _uri () {
-    return `comments/${this.name.slice(3)}`;
+    return `comments/${this.id}`;
   }
   // TODO: Get rid of some boilerplate code here
   /**

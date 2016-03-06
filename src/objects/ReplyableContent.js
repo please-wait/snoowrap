@@ -8,6 +8,10 @@ const api_type = 'json';
 * @extends RedditContent
 */
 const ReplyableContent = class extends require('./RedditContent') {
+  constructor (options, ...args) {
+    super(options, ...args);
+    this.id = this.hasOwnProperty('id') ? this.id : this.name.slice(3);
+  }
   /**
   * @summary Removes this Comment, Submission or PrivateMessage from public listings.
   * @desc This requires the authenticated user to be a moderator of the subreddit with the `posts` permission.
